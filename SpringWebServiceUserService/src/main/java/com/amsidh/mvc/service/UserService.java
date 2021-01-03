@@ -1,16 +1,22 @@
 package com.amsidh.mvc.service;
 
-import com.amsidh.mvc.model.model.User;
+import java.util.List;
 
-public interface UserService {
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-	User createUser(User user);
+import com.amsidh.mvc.model.model.UserDto;
 
-	User getUser(String userId);
+public interface UserService extends UserDetailsService{
 
-	User updateUser(String userId, User user);
+    UserDto createUser(UserDto user);
 
-	void deleteUser(String userId);
+    UserDto getUser(String userId);
 
-	Iterable<User> getUsers();
+    UserDto updateUser(String userId, UserDto user);
+
+    void deleteUser(String userId);
+
+    List<UserDto> getUsers();
+    
+    public UserDto getUserEntityByEmailId(String userName);
 }

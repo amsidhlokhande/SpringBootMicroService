@@ -1,13 +1,13 @@
 package com.amsidh.mvc.util;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UniqueIdGenerator {
 
-	public String getUniqueId() {
-		return UUID.randomUUID().toString();
-	}
+    public String getUniqueId() {
+        return UUID.randomUUID().toString();
+    }
 }
