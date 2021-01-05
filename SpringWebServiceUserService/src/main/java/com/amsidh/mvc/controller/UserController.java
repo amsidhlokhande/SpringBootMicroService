@@ -36,7 +36,8 @@ public class UserController {
     @GetMapping(value = "/health/check")
     public ResponseEntity<String> healthCheck() {
         log.info("Users web service is working on port " + environment.getProperty("local.server.port"));
-        return ResponseEntity.ok("Users web service is working on port " + environment.getProperty("local.server.port"));
+        log.info("Checking Test user with user ID "+ environment.getProperty("test.user"));
+        return ResponseEntity.ok("Users web service is working on port " + environment.getProperty("local.server.port") + " and test user Id "+ environment.getProperty("test.user"));
     }
 
 
