@@ -17,11 +17,11 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class AutheticationHeaderFilter extends AbstractGatewayFilterFactory<Object> {
+public class AuthenticationHeaderFilter extends AbstractGatewayFilterFactory<Object> {
 
 	private final Environment environment;
 
-	public AutheticationHeaderFilter(Environment environment) {
+	public AuthenticationHeaderFilter(Environment environment) {
 		this.environment = environment;
 	}
 
