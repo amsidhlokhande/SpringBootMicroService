@@ -19,6 +19,6 @@ public class AccountController {
 	@GetMapping("/health/check")
 	public ResponseEntity<String> cheakHealth() {
 		return ResponseEntity
-				.ok("Account web service is working on port " + environment.getProperty("local.server.port"));
+				.ok("Account web service is working on port " + environment.getProperty("local.server.port") + " And Account message is " + environment.getProperty("account.message"));
 	}
 }
