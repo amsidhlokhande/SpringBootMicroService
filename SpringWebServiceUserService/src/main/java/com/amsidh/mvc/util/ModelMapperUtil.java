@@ -52,7 +52,7 @@ public class ModelMapperUtil {
     public static UserDto convertToUserDto(UserEntity userEntity) {
         return Optional.ofNullable(userEntity).map(user -> {
             UserDto userDto = modelMapper.map(user, UserDto.class);
-            userDto.setPassword(PASSWORD_ENCODER.encode(userEntity.getEncryptedPassword()));
+            userDto.setPassword(userEntity.getEncryptedPassword());
             return userDto;
         }).orElseThrow(() -> new UserException("UserEntity should not be null"));
     }
@@ -66,6 +66,6 @@ public class ModelMapperUtil {
     }
 
     public static UserResponseModel convertToUserResponseModel(UserDto userDto) {
-    	return Optional.ofNullable(userDto).map(user -> modelMapper.map(userDto, UserResponseModel.class)).orElseThrow(() -> new UserException("UserDto should not be null"));
+        return Optional.ofNullable(userDto).map(user -> modelMapper.map(userDto, UserResponseModel.class)).orElseThrow(() -> new UserException("UserDto should not be null"));
     }
 }

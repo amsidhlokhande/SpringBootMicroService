@@ -1,22 +1,21 @@
 package com.amsidh.mvc.service;
 
-import java.util.List;
-
-import org.springframework.security.core.userdetails.UserDetailsService;
-
 import com.amsidh.mvc.model.model.UserDto;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public interface UserService extends UserDetailsService{
+public interface UserService extends UserDetailsService {
 
-    UserDto createUser(UserDto user);
+    Mono<UserDto> createUser(UserDto user);
 
-    UserDto getUser(String userId);
+    Mono<UserDto> getUser(String userId);
 
-    UserDto updateUser(String userId, UserDto user);
+    Mono<UserDto> updateUser(String userId, UserDto user);
 
-    void deleteUser(String userId);
+    Mono<Void> deleteUser(String userId);
 
-    List<UserDto> getUsers();
-    
-    public UserDto getUserEntityByEmailId(String userName);
+    Flux<UserDto> getUsers();
+
+    Mono<UserDto> getUserEntityByEmailId(String userName);
 }

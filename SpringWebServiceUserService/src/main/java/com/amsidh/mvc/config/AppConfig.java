@@ -14,24 +14,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AppConfig {
 
-	@Bean
-	@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
-	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 
-	@Bean
-	public HttpTraceRepository getHttpTraceRepository() {
-		return new InMemoryHttpTraceRepository();
-	}
+    @Bean
+    public HttpTraceRepository getHttpTraceRepository() {
+        return new InMemoryHttpTraceRepository();
+    }
 
-	@Bean
-	public AuditEventRepository getAuditEventRepository() {
-		return new InMemoryAuditEventRepository();
-	}
-
-
+    @Bean
+    public AuditEventRepository getAuditEventRepository() {
+        return new InMemoryAuditEventRepository();
+    }
 
 
 }

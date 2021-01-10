@@ -1,38 +1,29 @@
 package com.amsidh.mvc.repository.user.entity;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "USERINFO")
+@Document(value = "users")
 public class UserEntity implements Serializable {
-	private static final long serialVersionUID = -313203031614115277L;
+    private static final long serialVersionUID = -313203031614115277L;
 
-	@Id
-	@Column(name = "USERID")
-	private String userId;
+    @Id
+    private String userId;
 
-	@Column(name = "FIRSTNAME")
-	private String firstName;
+    private String firstName;
 
-	@Column(name = "LASTNAME")
-	private String lastName;
+    private String lastName;
 
-	@Column(name = "EMAILID")
-	private String emailId;
+    private String emailId;
 
-	@Column(name = "PASSWORD")
-	private String encryptedPassword;
+    private String encryptedPassword;
 
 }

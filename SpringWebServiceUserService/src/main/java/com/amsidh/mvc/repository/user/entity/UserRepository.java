@@ -1,11 +1,12 @@
 package com.amsidh.mvc.repository.user.entity;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserRepository  extends CrudRepository<UserEntity, String> {
+public interface UserRepository extends ReactiveMongoRepository<UserEntity, String> {
 
-	UserEntity findByEmailId(String userName);
+    Mono<UserEntity> findByEmailId(String userName);
 
 }
