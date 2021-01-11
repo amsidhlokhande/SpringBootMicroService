@@ -1,5 +1,6 @@
 package com.amsidh.mvc.config;
 
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
@@ -31,5 +32,10 @@ public class AppConfig {
         return new InMemoryAuditEventRepository();
     }
 
+    @Bean
+	public GroupedOpenApi employeesOpenApi() {
+		String[] paths = { "/users/**" };
+		return GroupedOpenApi.builder().group("users").pathsToMatch(paths).build();
+	}
 
 }

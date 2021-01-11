@@ -3,6 +3,7 @@ package com.amsidh.mvc.security;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 @Slf4j
 public class SecurityContextRepository implements ServerSecurityContextRepository {
     private final AuthenticationManager authenticationManager;
+    private final Environment environment;
 
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
@@ -28,6 +30,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
         log.info("SecurityContextRepository load method called");
+        log.info("Security permitAll for these urls");
+        Arrays.asList(this.environment.getProperty("security.permitAll.paths", String[].class)).forEach(log::info);
         String bearer = "Bearer ";
         return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
                 .filter(authHeader -> authHeader.startsWith(bearer))
