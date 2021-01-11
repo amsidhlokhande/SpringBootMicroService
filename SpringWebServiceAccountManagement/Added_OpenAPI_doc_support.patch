@@ -1,0 +1,20 @@
+Index: SpringWebServiceAccountManagement/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- SpringWebServiceAccountManagement/pom.xml	(revision 51d663cfe2f351005bdf5d5af5d44ecc498e4dd6)
++++ SpringWebServiceAccountManagement/pom.xml	(date 1610391560036)
+@@ -105,6 +105,12 @@
+ 			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+ 			<version>${springdoc.version}</version>
+ 		</dependency>
++		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
++		<dependency>
++			<groupId>org.springdoc</groupId>
++			<artifactId>springdoc-openapi-ui</artifactId>
++			<version>${springdoc.version}</version>
++		</dependency>
+ 
+ 		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
