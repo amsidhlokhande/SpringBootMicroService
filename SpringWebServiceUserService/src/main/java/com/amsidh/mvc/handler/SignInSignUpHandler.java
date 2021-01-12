@@ -21,6 +21,7 @@ public class SignInSignUpHandler {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapperUtil modelMapperUtil;
 
     public Mono<ServerResponse> signIn(ServerRequest serverRequest) {
         log.info("SignInSignUpHandler signIn method called");
@@ -39,7 +40,7 @@ public class SignInSignUpHandler {
     public Mono<ServerResponse> signUp(ServerRequest serverRequest) {
         log.info("SignInSignUpHandler signUp method called");
         Mono<UserDto> savedUserDtoMono = serverRequest.bodyToMono(UserDto.class).flatMap(userDto -> this.userService.createUser(userDto));
-        return ServerResponse.ok().body(savedUserDtoMono.flatMap(userDto -> Mono.justOrEmpty(ModelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
+        return ServerResponse.ok().body(savedUserDtoMono.flatMap(userDto -> Mono.justOrEmpty(modelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
     }
 
 }

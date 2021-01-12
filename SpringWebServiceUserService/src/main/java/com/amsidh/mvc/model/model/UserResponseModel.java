@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,5 +29,7 @@ public class UserResponseModel implements Serializable {
     @Email(message = "Invalid emailId")
     @NotNull(message = "EmailId must not null or empty")
     private String emailId;
+
+    private List<AlbumResponseModel> albums;
 
 }

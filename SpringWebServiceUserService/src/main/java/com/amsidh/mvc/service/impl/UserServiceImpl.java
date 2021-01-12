@@ -7,6 +7,7 @@ import com.amsidh.mvc.repository.user.entity.UserRepository;
 import com.amsidh.mvc.service.UserService;
 import com.amsidh.mvc.util.ModelMapperUtil;
 import com.amsidh.mvc.util.UniqueIdGenerator;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,23 +22,20 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UniqueIdGenerator uniqueIdGenerator;
     private final UserRepository userRepository;
+    private final ModelMapperUtil modelMapperUtil;
 
-    public UserServiceImpl(UniqueIdGenerator uniqueIdGenerator, UserRepository userRepository) {
-        log.info("Initializing UserServiceImpl!!!");
-        this.uniqueIdGenerator = uniqueIdGenerator;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Mono<UserDto> createUser(UserDto userDto) {
         log.info("UserServiceImpl createUser method called");
         String userId = uniqueIdGenerator.getUniqueId();
         userDto.setUserId(userId);
-        Mono<UserDto> userDtoMono = userRepository.save(ModelMapperUtil.convertToUserEntity(userDto)).map(ModelMapperUtil::convertToUserDto);
+        Mono<UserDto> userDtoMono = userRepository.save(modelMapperUtil.convertToUserEntity(userDto)).map(modelMapperUtil::convertToUserDto);
         return userDtoMono;
     }
 
@@ -46,7 +44,7 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl getUser method called");
         Mono<UserDto> userDtoMono = userRepository.findById(userId)
                 .doOnError(exception -> new UserException(""))
-                .map(ModelMapperUtil::convertToUserDto);
+                .map(modelMapperUtil::convertToUserDto);
         return userDtoMono;
 
     }
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public Mono<UserDto> updateUser(String userId, UserDto userDto) {
         log.info("UserServiceImpl updateUser method called");
         Mono<UserDto> monoUserDto = getUser(userId);
-        Mono<UserEntity> monoUserEntity = monoUserDto.map(ModelMapperUtil::convertToUserEntity).map(userEntity -> {
+        Mono<UserEntity> monoUserEntity = monoUserDto.map(modelMapperUtil::convertToUserEntity).map(userEntity -> {
             String matchingUserId = Optional.ofNullable(userDto.getUserId()).filter(uid -> uid.equals(userEntity.getUserId())).orElseThrow(() -> new UserException("UserId in uri and body are not matching"));
             log.info(String.format("Updating the user having userId %s", matchingUserId));
             Optional.ofNullable(userDto.getFirstName()).ifPresent(userEntity::setFirstName);
@@ -70,7 +68,7 @@ public class UserServiceImpl implements UserService {
                     log.info("User Updated Successfully");
                 }));
 
-        return monoUserEntity.map(ModelMapperUtil::convertToUserDto);
+        return monoUserEntity.map(modelMapperUtil::convertToUserDto);
 
     }
 
@@ -84,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Flux<UserDto> getUsers() {
         log.info("UserServiceImpl getUsers method called");
-        Flux<UserDto> fluxUserDto = this.userRepository.findAll().map(ModelMapperUtil::convertToUserDto);
+        Flux<UserDto> fluxUserDto = this.userRepository.findAll().map(modelMapperUtil::convertToUserDto);
         return fluxUserDto;
     }
 
@@ -101,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserDto> getUserEntityByEmailId(String userName) {
         log.info("UserServiceImpl getUserEntityByEmailId method called");
-        Mono<UserDto> userDtoMono = userRepository.findByEmailId(userName).map(ModelMapperUtil::convertToUserDto);
+        Mono<UserDto> userDtoMono = userRepository.findByEmailId(userName).map(modelMapperUtil::convertToUserDto);
         return userDtoMono;
     }
 

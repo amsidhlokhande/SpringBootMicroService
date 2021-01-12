@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 public class UserHandler {
 
     private final UserService userService;
+    private final ModelMapperUtil modelMapperUtil;
 
     public Mono<ServerResponse> healthCheck(ServerRequest serverRequest) {
         log.info("UserHandler healthCheck method called");
@@ -25,24 +26,24 @@ public class UserHandler {
 
     public Mono<ServerResponse> getAllUsers(ServerRequest serverRequest) {
         log.info("UserHandler getAllUsers method called");
-        return ServerResponse.ok().body(userService.getUsers().flatMap(userDto -> Mono.justOrEmpty(ModelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
+        return ServerResponse.ok().body(userService.getUsers().flatMap(userDto -> Mono.justOrEmpty(modelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
     }
 
     public Mono<ServerResponse> getUserById(ServerRequest serverRequest) {
         log.info("UserHandler getUserById method called");
-        return ServerResponse.ok().body(userService.getUser(serverRequest.pathVariable("userId")).flatMap(userDto -> Mono.justOrEmpty(ModelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
+        return ServerResponse.ok().body(userService.getUser(serverRequest.pathVariable("userId")).flatMap(userDto -> Mono.justOrEmpty(modelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
     }
 
     public Mono<ServerResponse> createUser(ServerRequest serverRequest) {
         log.info("UserHandler createUser method called");
         Mono<UserDto> userDtoMono = serverRequest.bodyToMono(UserDto.class).flatMap(userDto -> userService.createUser(userDto));
-        return ServerResponse.ok().body(userDtoMono.flatMap(userDto -> Mono.justOrEmpty(ModelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
+        return ServerResponse.ok().body(userDtoMono.flatMap(userDto -> Mono.justOrEmpty(modelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
     }
 
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
         log.info("UserHandler updateUser method called");
         Mono<UserDto> userDtoMono = serverRequest.bodyToMono(UserDto.class).flatMap(userDto -> userService.updateUser(serverRequest.pathVariable("userId"), userDto));
-        return ServerResponse.ok().body(userDtoMono.flatMap(userDto -> Mono.justOrEmpty(ModelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
+        return ServerResponse.ok().body(userDtoMono.flatMap(userDto -> Mono.justOrEmpty(modelMapperUtil.convertToUserResponseModel(userDto))), UserResponseModel.class);
     }
 
     public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
