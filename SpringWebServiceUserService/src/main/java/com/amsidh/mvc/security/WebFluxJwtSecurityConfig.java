@@ -4,17 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -47,7 +51,11 @@ public class WebFluxJwtSecurityConfig {
                 .pathMatchers("/users/health/check").permitAll()
                 .anyExchange().authenticated()
                 /*.access(this::whiteListIp)*/
-                .and().formLogin().disable().httpBasic().disable().csrf().disable()
+                .and()
+                .formLogin().disable()
+                .httpBasic().authenticationEntryPoint(new HttpStatusServerEntryPoint(UNAUTHORIZED))
+                .and()
+                .csrf().disable()
                 .authenticationManager(authenticationManager).securityContextRepository(securityContextRepository)
                 .requestCache().requestCache(NoOpServerRequestCache.getInstance());
 
