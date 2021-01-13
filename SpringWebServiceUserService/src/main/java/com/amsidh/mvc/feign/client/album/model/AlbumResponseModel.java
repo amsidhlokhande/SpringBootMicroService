@@ -1,12 +1,12 @@
-package com.amsidh.mvc.model.model;
+package com.amsidh.mvc.feign.client.album.model;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
-
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor

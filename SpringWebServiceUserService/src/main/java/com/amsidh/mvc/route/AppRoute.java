@@ -1,15 +1,24 @@
 package com.amsidh.mvc.route;
 
-import com.amsidh.mvc.handler.SignInSignUpHandler;
-import com.amsidh.mvc.handler.UserHandler;
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.PATCH;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.*;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import com.amsidh.mvc.handler.signin.SignInHandler;
+import com.amsidh.mvc.handler.user.UserHandler;
+import com.amsidh.mvc.handlers.signup.SignUpHandler;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @Slf4j
@@ -17,43 +26,38 @@ public class AppRoute {
 
     private static final String USER_HOME_URL = "/users";
     private static final String USER_HOME_WITH_USERID_URL = "/users/{userId}";
-    private static final String USER_HOME_WITH_USERNAME_URL = "/users/{username}";
     private final String PERSON_HOME_URL = "/persons";
     private final String PERSON_HOME_USERID_URL = "/persons/{userId}";
-    private final String PERSON_HOME_USERNAME_URL = "/persons/{username}";
+
 
     @Bean
-    public RouterFunction getUserWsHealthCheck(UserHandler userHandler) {
-        log.info("AppRoute getUserWsHealthCheck method called");
-        return route(GET(USER_HOME_URL + "/health/check").and(accept(APPLICATION_JSON)), userHandler::healthCheck);
-    }
-
-    @Bean
-    public RouterFunction getUserRoute(UserHandler userHandler) {
+    public RouterFunction<ServerResponse> getUserRoute(UserHandler userHandler) {
         log.info("AppRoute getUserRoute method called");
         return route(GET(USER_HOME_URL).and(accept(APPLICATION_JSON)), userHandler::getAllUsers).and(
-                route(POST(USER_HOME_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::createUser)).and(
                 route(PATCH(USER_HOME_WITH_USERID_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::updateUser)).and(
                 route(GET(USER_HOME_WITH_USERID_URL).and(accept(APPLICATION_JSON)), userHandler::getUserById)).and(
-                route(DELETE(USER_HOME_WITH_USERID_URL), userHandler::deleteUserById)).and(
-                route(GET(USER_HOME_WITH_USERNAME_URL).and(accept(APPLICATION_JSON)), userHandler::getUserByUsername));
+                route(DELETE(USER_HOME_WITH_USERID_URL), userHandler::deleteUserById));
     }
 
     @Bean
-    public RouterFunction getSignInSignUp(SignInSignUpHandler signInSignUpHandler) {
+    public RouterFunction<ServerResponse>  getSignInRoutes(SignInHandler signInHandler) {
         log.info("AppRoute getSignInSignUp method called");
-        return route(POST(USER_HOME_URL + "/signIn").and(accept(APPLICATION_JSON)), signInSignUpHandler::signIn).and(
-                route(POST(USER_HOME_URL + "/signUp").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), signInSignUpHandler::signUp));
+        return route(POST(USER_HOME_URL + "/signIn").and(accept(APPLICATION_JSON)), signInHandler::signIn);
     }
+    
+    @Bean
+    public RouterFunction<ServerResponse>  getSignUpRouter(SignUpHandler signUpHandler) {
+        log.info("AppRoute getSignInSignUp method called");
+        return route(POST(USER_HOME_URL + "/signUp").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), signUpHandler::signUp);
+    }
+    
 
     @Bean
-    public RouterFunction getPersonsRoute(UserHandler userHandler) {
+    public RouterFunction<ServerResponse>  getPersonsRoute(UserHandler userHandler) {
         log.info("AppRoute getPersonsRoute method called");
         return route(GET(PERSON_HOME_URL).and(accept(APPLICATION_JSON)), userHandler::getAllUsers).and(
-                route(POST(PERSON_HOME_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::createUser)).and(
                 route(PATCH(PERSON_HOME_USERID_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::updateUser)).and(
                 route(GET(PERSON_HOME_USERID_URL).and(accept(APPLICATION_JSON)), userHandler::getUserById)).and(
-                route(DELETE(PERSON_HOME_USERID_URL), userHandler::deleteUserById)).and(
-                route(GET(PERSON_HOME_USERNAME_URL).and(accept(APPLICATION_JSON)), userHandler::getUserByUsername));
+                route(DELETE(PERSON_HOME_USERID_URL), userHandler::deleteUserById));
     }
 }

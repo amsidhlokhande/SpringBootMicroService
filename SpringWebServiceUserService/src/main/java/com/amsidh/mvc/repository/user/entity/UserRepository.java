@@ -2,6 +2,7 @@ package com.amsidh.mvc.repository.user.entity;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+
 import reactor.core.publisher.Mono;
 
 @Repository

@@ -23,7 +23,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
         return userRepository.findByEmailId(username).flatMap(employee -> {
             log.info("Checking jwt token validation");
-            if (employee.getEmailId().equals(username) && jwtUtil.isTokenValidated(token)) {
+			if (employee.getEmailId().equals(username) && jwtUtil.isTokenValidated(token)) {
                 log.info("Jwt token is valid");
                 return Mono.just(authentication);
             } else {

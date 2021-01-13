@@ -1,8 +1,10 @@
-package com.amsidh.mvc.handler;
+package com.amsidh.mvc.handler.signin.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -11,7 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInRequestModel {
+public class SignInRequestModel implements Serializable{
     private static final long serialVersionUID = -1293645481714452901L;
     @Email(message = "Invalid emailId")
     @NotNull(message = "EmailId must not null or empty")
