@@ -1,20 +1,17 @@
 package com.amsidh.mvc.util;
 
-import com.amsidh.mvc.exception.UserException;
-import com.amsidh.mvc.model.model.AlbumResponseModel;
-import com.amsidh.mvc.model.model.UserDto;
-import com.amsidh.mvc.model.model.UserRequestModel;
-import com.amsidh.mvc.model.model.UserResponseModel;
-import com.amsidh.mvc.repository.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.reactivestreams.Publisher;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,9 +19,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.amsidh.mvc.exception.UserException;
+import com.amsidh.mvc.feign.client.AlbumsServiceClient;
+import com.amsidh.mvc.model.model.AlbumResponseModel;
+import com.amsidh.mvc.model.model.UserDto;
+import com.amsidh.mvc.model.model.UserRequestModel;
+import com.amsidh.mvc.model.model.UserResponseModel;
+import com.amsidh.mvc.repository.user.entity.UserEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 @AllArgsConstructor
@@ -35,6 +41,7 @@ public class ModelMapperUtil {
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
     private final RestTemplate restTemplate;
     private final Environment environment;
+    private final AlbumsServiceClient albumsServiceClient;
 
     static {
         modelMapper.getConfiguration()
@@ -84,11 +91,16 @@ public class ModelMapperUtil {
         return Optional.ofNullable(userDto).map(user -> {
 
             //Calling Albums-WS service to get albums for a user
-            ResponseEntity<List<AlbumResponseModel>> exchange = restTemplate.exchange(String.format(environment.getProperty("albums.url.user"), user.getUserId()), HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
-            });
+           // ResponseEntity<List<AlbumResponseModel>> exchange = restTemplate.exchange(String.format(environment.getProperty("albums.url.user"), user.getUserId()), HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
+            //});
 
             UserResponseModel userResponseModel = modelMapper.map(userDto, UserResponseModel.class);
-            userResponseModel.setAlbums(exchange.getBody());
+            //userResponseModel.setAlbums(exchange.getBody());
+            Mono<UserResponseModel> objectMono = albumsServiceClient.getAlbumsByUserId(user.getUserId()).flatMap(albumResponseModel -> {
+                userResponseModel.getAlbums().add(albumResponseModel);
+                return Mono.justOrEmpty(userResponseModel);
+            });
+            //userResponseModel.setAlbums(albums);
             return userResponseModel;
 
         }).orElseThrow(() -> new UserException("UserDto should not be null"));
