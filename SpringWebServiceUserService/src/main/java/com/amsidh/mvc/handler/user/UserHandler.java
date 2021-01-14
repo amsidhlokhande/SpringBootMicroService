@@ -1,5 +1,6 @@
 package com.amsidh.mvc.handler.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.amsidh.mvc.feign.client.album.AlbumsServiceClient;
+import com.amsidh.mvc.feign.client.album.AlbumsServiceFeignClient;
 import com.amsidh.mvc.feign.client.album.model.AlbumResponseModel;
 import com.amsidh.mvc.handler.user.model.UserRequestModel;
 import com.amsidh.mvc.handler.user.model.UserResponseModel;
@@ -24,7 +25,7 @@ public class UserHandler {
 
 	private final UserRepository userRepository;
 	private final ModelMapper modelMapper;
-	private final AlbumsServiceClient albumsServiceClient;
+	private final AlbumsServiceFeignClient albumsServiceFeignClient;
 
 	public Mono<ServerResponse> getAllUsers(ServerRequest serverRequest) {
 		log.info("UserHandler getAllUsers method called");
@@ -60,8 +61,7 @@ public class UserHandler {
 	}
 
 	private Mono<? extends UserResponseModel> getAlbumsOfUser(UserResponseModel userResponse) {
-		Mono<AlbumResponseModel> albums = albumsServiceClient
-				.getAlbumsByUserId(userResponse.getUserId());
+		List<AlbumResponseModel> albums = albumsServiceFeignClient.getAlbumsByUserId(userResponse.getUserId());
 		userResponse.setAlbums(albums);
 		return Mono.justOrEmpty(userResponse);
 	}

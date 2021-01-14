@@ -1,13 +1,13 @@
 package com.amsidh.mvc.handler.user.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.amsidh.mvc.feign.client.album.model.AlbumResponseModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import reactor.core.publisher.Mono;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +23,6 @@ public class UserResponseModel implements Serializable {
 
     private String emailId;
 
-    private Mono<AlbumResponseModel> albums;
+    private List<AlbumResponseModel> albums;
 
 }
