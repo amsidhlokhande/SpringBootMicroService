@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import feign.Logger;
+
 @Configuration
 public class AppConfig {
 
@@ -52,6 +54,11 @@ public class AppConfig {
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	Logger.Level getFeignClientLoggerLevel(){
+		return Logger.Level.FULL;
 	}
 
 }
