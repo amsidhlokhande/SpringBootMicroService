@@ -10,6 +10,6 @@ import com.amsidh.mvc.feign.client.album.model.AlbumResponseModel;
 
 @FeignClient(name = "albums-ws", url = "albums-ws:62891")
 public interface AlbumsServiceFeignClient {
-    @GetMapping(value = "/albums/{userId}/albums")
+    @GetMapping(value = "/albums/{userId}/albumss")
    List<AlbumResponseModel> getAlbumsByUserId(@PathVariable("userId") String userId);
 }
