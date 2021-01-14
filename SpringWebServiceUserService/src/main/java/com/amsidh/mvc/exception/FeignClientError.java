@@ -1,14 +1,18 @@
 package com.amsidh.mvc.exception;
 
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;
+import lombok.AllArgsConstructor;
 
 @Component
+@AllArgsConstructor
 public class FeignClientError implements ErrorDecoder {
+	private final Environment environment;
 
 	@Override
 	public Exception decode(String methodKey, Response response) {
@@ -20,7 +24,7 @@ public class FeignClientError implements ErrorDecoder {
 			break;
 		case 404:
 			if (methodKey.contains("getAlbumsByUserId")) {
-				return new ResponseStatusException(HttpStatus.valueOf(response.status()), "User albums are not found");
+				return new ResponseStatusException(HttpStatus.valueOf(response.status()), environment.getProperty("albums.exceptions.user-album-not-found"));
 			}
 			break;
 		default:
