@@ -1,9 +1,12 @@
 package com.amsidh.mvc.handler.user;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,6 +29,8 @@ public class UserHandler {
 	private final UserRepository userRepository;
 	private final ModelMapper modelMapper;
 	private final AlbumsServiceFeignClient albumsServiceFeignClient;
+	
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
 	public Mono<ServerResponse> getAllUsers(ServerRequest serverRequest) {
 		log.info("UserHandler getAllUsers method called");
@@ -61,8 +66,14 @@ public class UserHandler {
 	}
 
 	private Mono<? extends UserResponseModel> getAlbumsOfUser(UserResponseModel userResponse) {
-		List<AlbumResponseModel> albums = albumsServiceFeignClient.getAlbumsByUserId(userResponse.getUserId());
-		userResponse.setAlbums(albums);
+
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("albumsCircuitBreaker");
+	    
+	     List<AlbumResponseModel> albums = circuitBreaker.run(() -> albumsServiceFeignClient.getAlbumsByUserId(userResponse.getUserId()), 
+	      throwable -> Collections.emptyList());
+	     
+	   	//List<AlbumResponseModel> albums = albumsServiceFeignClient.getAlbumsByUserId(userResponse.getUserId());
+			userResponse.setAlbums(albums);
 		return Mono.justOrEmpty(userResponse);
 	}
 
