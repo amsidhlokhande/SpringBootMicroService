@@ -26,7 +26,7 @@ public class SignUpHandler {
 	private final ModelMapper modelMapper;
 
 	public Mono<ServerResponse> signUp(ServerRequest serverRequest) {
-		log.info("SignInSignUpHandler signUp method called");
+		log.debug("SignInSignUpHandler signUp method called");
 		
 	return	serverRequest.bodyToMono(SignUpRequestModel.class).flatMap(signUpRequestModel->{
 			UserEntity userEntity = modelMapper.map(signUpRequestModel, UserEntity.class);

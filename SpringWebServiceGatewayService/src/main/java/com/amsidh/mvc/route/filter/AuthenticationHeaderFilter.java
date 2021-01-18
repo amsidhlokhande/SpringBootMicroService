@@ -27,7 +27,7 @@ public class AuthenticationHeaderFilter extends AbstractGatewayFilterFactory<Obj
 
 	@Override
 	public GatewayFilter apply(Object config) {
-		log.info("GatewayFilter apply method called");
+		log.debug("GatewayFilter apply method called");
 		return (exchange, chain) -> {
 			HttpHeaders headers = exchange.getRequest().getHeaders();
 			if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
@@ -36,7 +36,7 @@ public class AuthenticationHeaderFilter extends AbstractGatewayFilterFactory<Obj
 
 			String authorizationHeaderValue = headers.get(HttpHeaders.AUTHORIZATION).get(0);
 			String jwtTokenValue = authorizationHeaderValue.replace("Bearer", "").trim();
-			log.info("jwtTokenValue " + jwtTokenValue);
+			log.debug("jwtTokenValue " + jwtTokenValue);
 			if (!isJwtValid(jwtTokenValue)) {
 				log.error("Invalid JWT Token");
 				return onError(exchange, "Invalid JWT Token", HttpStatus.UNAUTHORIZED);

@@ -17,8 +17,8 @@ public class RetryableConfig {
 	
  @Bean
  public RetryTemplate getRetryTemplate() {
-	 log.info("retry.max.retry.attempt :"+ Integer.parseInt(environment.getProperty("retry.max.retry.attempt")));
-	 log.info("retry.max.backoff.mills :"+ Long.parseLong(environment.getProperty("retry.max.backoff.mills")));
+	 log.debug("retry.max.retry.attempt :"+ Integer.parseInt(environment.getProperty("retry.max.retry.attempt")));
+	 log.debug("retry.max.backoff.mills :"+ Long.parseLong(environment.getProperty("retry.max.backoff.mills")));
 	 return RetryTemplate.builder()
 				.maxAttempts(Integer.parseInt(environment.getProperty("retry.max.retry.attempt")))
 				.fixedBackoff(Long.parseLong(environment.getProperty("retry.max.backoff.mills")))

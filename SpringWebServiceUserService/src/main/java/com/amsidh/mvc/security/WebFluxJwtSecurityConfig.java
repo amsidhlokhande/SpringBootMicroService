@@ -41,9 +41,9 @@ public class WebFluxJwtSecurityConfig {
 	@Bean
 	public SecurityWebFilterChain getSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
 		String[] properties = this.environment.getProperty("security.permitAll.paths", String[].class);
-		Arrays.asList(properties).forEach(System.out::println);
+		Arrays.asList(properties).forEach(log::debug);
 
-		log.info("WebFluxJwtSecurityConfig getSecurityFilterChain method called");
+		log.debug("WebFluxJwtSecurityConfig getSecurityFilterChain method called");
 		serverHttpSecurity.authorizeExchange().pathMatchers(properties).permitAll().pathMatchers("/users/signIn")
 				.permitAll().pathMatchers("/users/signUp").permitAll().pathMatchers("/users/health/check").permitAll()
 				.anyExchange().authenticated()
@@ -57,7 +57,7 @@ public class WebFluxJwtSecurityConfig {
 	}
 
 	private Mono<AuthorizationDecision> whiteListIp(Mono<Authentication> authentication, AuthorizationContext context) {
-		log.info("WebFluxJwtSecurityConfig whiteListIp method called");
+		log.debug("WebFluxJwtSecurityConfig whiteListIp method called");
 		String ip = context.getExchange().getRequest().getRemoteAddress().getAddress().toString().replace("/", "");
 		return authentication.map((a) -> new AuthorizationDecision(a.isAuthenticated()))
 				.defaultIfEmpty(new AuthorizationDecision((whiteListIp.contains(ip)) ? true : false));

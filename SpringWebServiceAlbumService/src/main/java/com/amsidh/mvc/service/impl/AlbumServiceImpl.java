@@ -22,19 +22,19 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public Mono<Album> saveAlbum(Album album) {
-		log.info("AlbumServiceImpl saveAlbum called");
+		log.debug("AlbumServiceImpl saveAlbum called");
 		return albumRepository.save(album);
 	}
 
 	@Override
 	public Mono<Album> getAlbumById(String albumId) {
-		log.info("AlbumServiceImpl getAlbumById called");
+		log.debug("AlbumServiceImpl getAlbumById called");
 		return albumRepository.findById(albumId);
 	}
 
 	@Override
 	public Mono<Album> updateAlbum(String albumId, Album album) {
-		log.info("AlbumServiceImpl updateAlbum called");
+		log.debug("AlbumServiceImpl updateAlbum called");
 		return getAlbumById(albumId).flatMap(alb -> {
 			if (alb.getAlbumId().equals(album.getAlbumId())) {
 
@@ -51,19 +51,19 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public Mono<Void> deleteAlbumById(String albumId) {
-		log.info("AlbumServiceImpl deleteAlbumById called");
+		log.debug("AlbumServiceImpl deleteAlbumById called");
 		return albumRepository.deleteById(albumId);
 	}
 
 	@Override
 	public Flux<Album> getAllAlbums() {
-		log.info("AlbumServiceImpl getAllAlbums called");
+		log.debug("AlbumServiceImpl getAllAlbums called");
 		return albumRepository.findAll();
 	}
 
 	@Override
 	public Flux<Album> getAlbumsByUserId(String userId) {
-		log.info("AlbumServiceImpl getAlbumsByUserId called");
+		log.debug("AlbumServiceImpl getAlbumsByUserId called");
 		return albumRepository.findByUserId(userId);
 	}
 

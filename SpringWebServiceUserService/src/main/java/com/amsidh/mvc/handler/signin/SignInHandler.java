@@ -24,7 +24,7 @@ public class SignInHandler {
 	private final UserRepository userRepository;
 
 	public Mono<ServerResponse> signIn(ServerRequest serverRequest) {
-		log.info("SignInSignUpHandler signIn method called");
+		log.debug("SignInSignUpHandler signIn method called");
 
 		return serverRequest.bodyToMono(SignInRequestModel.class).flatMap(signInRequestModel ->
 

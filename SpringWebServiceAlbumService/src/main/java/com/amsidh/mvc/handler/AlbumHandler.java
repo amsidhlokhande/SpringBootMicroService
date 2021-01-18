@@ -18,32 +18,32 @@ public class AlbumHandler {
 	private final AlbumService albumService;
 
 	public HandlerFunction<ServerResponse> findAllAlbums() {
-		log.info("AlbumHandler findAllAlbums called");
+		log.debug("AlbumHandler findAllAlbums called");
 		return request -> ServerResponse.ok().body(albumService.getAllAlbums(), Album.class);
 	}
 	
 	public HandlerFunction<ServerResponse> findAlbumsById() {
-		log.info("AlbumHandler findAlbumsById called");
+		log.debug("AlbumHandler findAlbumsById called");
 		return request -> ServerResponse.ok().body(albumService.getAlbumById(request.pathVariable("albumId")), Album.class);
 	}
 	
 	public HandlerFunction<ServerResponse> createAlbum() {
-		log.info("AlbumHandler findAlbumsById called");
+		log.debug("AlbumHandler findAlbumsById called");
 		return request -> request.bodyToMono(Album.class).flatMap(album->ServerResponse.ok().body(albumService.saveAlbum(album), Album.class));
 	}
 	
 	public HandlerFunction<ServerResponse> updateAlbum() {
-		log.info("AlbumHandler updateAlbum called");
+		log.debug("AlbumHandler updateAlbum called");
 		return request ->  ServerResponse.ok().body(request.bodyToMono(Album.class).flatMap(alb-> albumService.updateAlbum(request.pathVariable("albumId"), alb)), Album.class);
 	}
 	
 	public HandlerFunction<ServerResponse> deleteAlbum() {
-		log.info("AlbumHandler deleteAlbum called");
+		log.debug("AlbumHandler deleteAlbum called");
 		return request -> ServerResponse.ok().body(albumService.deleteAlbumById(request.pathVariable("albumId")), Void.class);
 	}
 	
 	public HandlerFunction<ServerResponse> getAlbumsByUserId() {
-		log.info("AlbumHandler getAlbumsByUserId called");
+		log.debug("AlbumHandler getAlbumsByUserId called");
 		return request -> ServerResponse.ok().body(albumService.getAlbumsByUserId(request.pathVariable("userId")), Album.class);
 	}
 	

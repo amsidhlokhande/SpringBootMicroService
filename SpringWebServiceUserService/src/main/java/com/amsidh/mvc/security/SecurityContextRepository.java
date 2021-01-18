@@ -30,9 +30,9 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
 	@Override
 	public Mono<SecurityContext> load(ServerWebExchange exchange) {
-		log.info("SecurityContextRepository load method called");
-		log.info("Security permitAll for these urls");
-		Arrays.asList(this.environment.getProperty("security.permitAll.paths", String[].class)).forEach(log::info);
+		log.debug("SecurityContextRepository load method called");
+		log.debug("Security permitAll for these urls");
+		Arrays.asList(this.environment.getProperty("security.permitAll.paths", String[].class)).forEach(log::debug);
 		String bearer = "Bearer ";
 		return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
 				.filter(authHeader -> authHeader.startsWith(bearer))

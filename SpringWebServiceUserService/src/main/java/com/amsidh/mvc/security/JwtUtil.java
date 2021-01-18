@@ -24,7 +24,7 @@ public class JwtUtil {
 	private Environment environment;
 
 	public String generateToken(SignInRequestModel signInRequestModel) {
-		log.info("JwtUtil authenticate generateToken called");
+		log.debug("JwtUtil authenticate generateToken called");
 		Date now = new Date();
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("alg", "HS512");

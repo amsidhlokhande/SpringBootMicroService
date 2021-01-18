@@ -32,14 +32,14 @@ public class UserHandler {
     private final RetryTemplate retryTemplate;
 
     public Mono<ServerResponse> getAllUsers(ServerRequest serverRequest) {
-        log.info("UserHandler getAllUsers method called");
+        log.debug("UserHandler getAllUsers method called");
         return ServerResponse.ok().body(userRepository.findAll().flatMap(userEntity -> {
             return Mono.justOrEmpty(modelMapper.map(userEntity, UserResponseModel.class));
         }).flatMap(userResponse -> getAlbumsOfUser(userResponse)), UserResponseModel.class);
     }
 
     public Mono<ServerResponse> getUserById(ServerRequest serverRequest) {
-        log.info("UserHandler getUserById method called");
+        log.debug("UserHandler getUserById method called");
         return ServerResponse.ok()
                 .body(userRepository.findById(serverRequest.pathVariable("userId")).flatMap(userEntity -> {
                     return Mono.justOrEmpty(modelMapper.map(userEntity, UserResponseModel.class))
@@ -48,7 +48,7 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
-        log.info("UserHandler updateUser method called");
+        log.debug("UserHandler updateUser method called");
 
         return ServerResponse.ok().body(serverRequest.bodyToMono(UserRequestModel.class).flatMap(userRequestModel -> {
             return userRepository.findById(serverRequest.pathVariable("userId")).flatMap(userEntity -> {
@@ -66,25 +66,27 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
-        log.info("UserHandler deleteUserById method called");
+        log.debug("UserHandler deleteUserById method called");
         return ServerResponse.ok().body(userRepository.deleteById(serverRequest.pathVariable("userId")), Void.class);
     }
 
     private Mono<? extends UserResponseModel> getAlbumsOfUser(UserResponseModel userResponse) {
-      
+    	log.debug("Inside UserHandler  getAlbumsOfUser");
         try {
 			List<AlbumResponseModel> albums = retryTemplate.execute(context -> {
 				log.info("Calling getAlbumsByUserId " + context.getRetryCount() + " times");
 				return albumsServiceFeignClient.getAlbumsByUserId(userResponse.getUserId());
 				},
                     context -> {
-                        log.info("Returning empty result as remote call failed even after retrying " + context.getRetryCount() + " times");
+                        log.debug("Returning empty result as remote call failed even after retrying " + context.getRetryCount() + " times");
                         return emptyList();
                     });
+			log.info("Call getAlbumsOfUser is completed");
             userResponse.setAlbums(albums);
         } catch (Exception e) {
-            log.info("!!!Exception occurred!!!");
+            log.error("!!!Exception occurred!!!");
         }
+        
         return Mono.justOrEmpty(userResponse);
     }
 

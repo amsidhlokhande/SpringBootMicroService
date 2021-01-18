@@ -32,7 +32,7 @@ public class AppRoute {
 
     @Bean
     public RouterFunction<ServerResponse> getUserRoute(UserHandler userHandler) {
-        log.info("AppRoute getUserRoute method called");
+        log.debug("AppRoute getUserRoute method called");
         return route(GET(USER_HOME_URL).and(accept(APPLICATION_JSON)), userHandler::getAllUsers).and(
                 route(PATCH(USER_HOME_WITH_USERID_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::updateUser)).and(
                 route(GET(USER_HOME_WITH_USERID_URL).and(accept(APPLICATION_JSON)), userHandler::getUserById)).and(
@@ -41,20 +41,20 @@ public class AppRoute {
 
     @Bean
     public RouterFunction<ServerResponse>  getSignInRoutes(SignInHandler signInHandler) {
-        log.info("AppRoute getSignInSignUp method called");
+        log.debug("AppRoute getSignInSignUp method called");
         return route(POST(USER_HOME_URL + "/signIn").and(accept(APPLICATION_JSON)), signInHandler::signIn);
     }
     
     @Bean
     public RouterFunction<ServerResponse>  getSignUpRouter(SignUpHandler signUpHandler) {
-        log.info("AppRoute getSignInSignUp method called");
+        log.debug("AppRoute getSignInSignUp method called");
         return route(POST(USER_HOME_URL + "/signUp").and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), signUpHandler::signUp);
     }
     
 
     @Bean
     public RouterFunction<ServerResponse>  getPersonsRoute(UserHandler userHandler) {
-        log.info("AppRoute getPersonsRoute method called");
+        log.debug("AppRoute getPersonsRoute method called");
         return route(GET(PERSON_HOME_URL).and(accept(APPLICATION_JSON)), userHandler::getAllUsers).and(
                 route(PATCH(PERSON_HOME_USERID_URL).and(accept(APPLICATION_JSON)).and(contentType(APPLICATION_JSON)), userHandler::updateUser)).and(
                 route(GET(PERSON_HOME_USERID_URL).and(accept(APPLICATION_JSON)), userHandler::getUserById)).and(

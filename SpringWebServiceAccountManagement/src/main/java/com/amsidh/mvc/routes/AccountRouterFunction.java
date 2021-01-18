@@ -27,7 +27,7 @@ public class AccountRouterFunction {
 
     @Bean
     public RouterFunction<ServerResponse> getAccountRoutes(AccountHandlerFunction accountHandlerFunction) {
-        log.info("AccountRouterFunction getAccountRoutes method called");
+        log.debug("AccountRouterFunction getAccountRoutes method called");
         return route().GET(ACCOUNTS_HEALTH_CHECK, accept(APPLICATION_JSON), accountHandlerFunction.healthCheck(), ops -> ops.beanClass(AccountService.class).beanMethod("healthStatus")).build()
                 .and(route().GET("ACCOUNTS_BASE_URL", accept(APPLICATION_JSON), accountHandlerFunction.getAllAccounts(), builder -> builder.beanClass(AccountService.class).beanMethod("getAllAccounts")).build())
                 .and(route().GET("ACCOUNTS_BASE_WITH_ACCOUNT_ID_URL", accept(APPLICATION_JSON), accountHandlerFunction.getAccountById(), builder -> builder.beanClass(AccountService.class).beanMethod("getAccountByAccountId")).build())

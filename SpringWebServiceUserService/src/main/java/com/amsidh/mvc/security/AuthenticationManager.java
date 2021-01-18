@@ -17,17 +17,17 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        log.info("AuthenticationManager authenticate method called");
+        log.debug("AuthenticationManager authenticate method called");
         String token = authentication.getCredentials().toString();
         String username = jwtUtil.getUsernameFromToken(token);
 
         return userRepository.findByEmailId(username).flatMap(employee -> {
-            log.info("Checking jwt token validation");
+            log.debug("Checking jwt token validation");
 			if (employee.getEmailId().equals(username) && jwtUtil.isTokenValidated(token)) {
-                log.info("Jwt token is valid");
+                log.debug("Jwt token is valid");
                 return Mono.just(authentication);
             } else {
-                log.info("Jwt token is Invalid");
+                log.debug("Jwt token is Invalid");
                 return Mono.empty();
             }
         }).switchIfEmpty(Mono.empty());
