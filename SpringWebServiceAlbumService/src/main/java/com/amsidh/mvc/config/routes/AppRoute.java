@@ -28,7 +28,7 @@ public class AppRoute {
 				.build()
 				.and(SpringdocRouteBuilder.route()
 				.POST(ALBUMS_BASE_URI, RequestPredicates.accept(MediaType.APPLICATION_JSON).and(RequestPredicates.contentType(MediaType.APPLICATION_JSON)), albumHandler.createAlbum(),
-						builder -> builder.beanClass(AlbumService.class).beanMethod("getAlbumById"))
+						builder -> builder.beanClass(AlbumService.class).beanMethod("saveAlbum"))
 				.build())
 				.and(SpringdocRouteBuilder.route()
 				.GET(ALBUMS_WITH_ALBUMID_URI, RequestPredicates.accept(MediaType.APPLICATION_JSON), albumHandler.findAlbumsById(),
