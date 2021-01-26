@@ -34,7 +34,7 @@ public class SignUpHandler {
 			userEntity.setEncryptedPassword(passwordEncoder.encode(signUpRequestModel.getPassword()));
 			return userRepository.save(userEntity);
 		}).flatMap(userEntity->{
-			return ServerResponse.ok().body(modelMapper.map(userEntity, SignUpResponseModel.class), SignUpResponseModel.class);
+			return ServerResponse.ok().body(Mono.just(modelMapper.map(userEntity, SignUpResponseModel.class)), SignUpResponseModel.class);
 		});
 		
 	}
