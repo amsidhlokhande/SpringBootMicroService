@@ -1,0 +1,6 @@
+FROM openjdk:8-jdk-alpine
+VOLUME [ "/tmp" ]
+COPY target/SpringWebServiceAlbumService-0.0.1-SNAPSHOT.jar SpringWebServiceAlbumService.jar
+COPY src/* src/
+COPY pom.xml pom.xml
+ENTRYPOINT [ "java", "-jar", "SpringWebServiceAlbumService.jar" ]

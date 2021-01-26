@@ -1,0 +1,8 @@
+FROM openjdk:8-jdk-alpine
+VOLUME [ "/tmp" ]
+COPY apiEncryptionKey.jks apiEncryptionKey.jks
+COPY dev/UnlimitedJCEPolicyJDK8/* /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.51.amzn1.x86_64/jre/lib/security/
+COPY target/AppCloudConfigService-0.0.1-SNAPSHOT.jar AppCloudConfigService.jar
+COPY src/* src/
+COPY pom.xml pom.xml
+ENTRYPOINT [ "java", "-Djava.security.egd=file:/dev/./urandom", "-jar","AppCloudConfigService.jar" ]
