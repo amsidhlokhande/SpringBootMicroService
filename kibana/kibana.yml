@@ -1,0 +1,4 @@
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://172.31.2.14:9200" ]
+monitoring.ui.container.elasticsearch.enabled: true
