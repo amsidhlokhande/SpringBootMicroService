@@ -1,0 +1,105 @@
+=============================Deployment Of MicroServices In EC2 Docker Container==============================
+apk update
+apk add curl
+Install curl in ec2 linux docker container
+apk --no-cache add curl
+
+docker exec -it f7cfdc225b3f  /bin/sh
+
+RabbitMq
+docker run -d --name rabbitmq -p 15672:15672 -p 15671:15671 -p 5672:5672 -p 5671:5671 -p 4369:4369 rabbitmq:3-management
+
+Zipkin
+docker run -d --name zipkin -p 9411:9411 openzipkin/zipkin
+
+Config Server
+docker run -d --name configservice -p 8888:8888 -e "spring.rabbitmq.host=172.17.0.2" adithilokhande/config-server
+docker run -d --name configservice-reactive -p 8888:8888 -e "spring.rabbitmq.host=172.17.0.2" -e "spring.zipkin.base-url=http://172.17.0.3:9411/" adithilokhande/configservice:reactive
+
+
+
+Configure following properties in config application.properties
+#These properties mostly getting changed while deployment changed
+zipkin.server.host=172.31.3.202
+spring.rabbitmq.host=172.31.11.225
+discovery.server.host=172.31.1.251
+spring.data.mongodb.host=localhost
+
+
+Discovery
+docker run -d --name discoveryservice -p 8010:8010 -e "spring.cloud.config.uri=http://172.31.8.75:8888" -e "spring.rabbitmq.host=172.31.8.75" adithilokhande/ws-discoveryservice:non-reactive
+
+docker run -d --name discoveryservice -p 8010:8010 -e "spring.cloud.config.uri=http://172.31.8.75:8888" adithilokhande/ws-discoveryservice:non-reactive
+docker run -d --name discoveryservice-reactive -p 8010:8010 -e "spring.cloud.config.uri=http://172.31.8.75:8888" adithilokhande/discoveryservice:reactive
+
+1) rabbitmq
+2) localhost vs parameter name
+
+
+Gateway
+docker run -d --name gatewayservice -p 8012:8012 -e "spring.cloud.config.uri=http://172.31.8.75:8888" adithilokhande/ws-gatewayservice:non-reactive
+docker run -d --name gatewayservice-reactive -p 8012:8012 -e "spring.cloud.config.uri=http://172.31.8.75:8888" adithilokhande/gatewayservice:reactive
+
+OR
+Zuul
+docker run -d -e "spring.cloud.config.uri=http://172.31.8.75:8888" -p 8012:8012 adithilokhande/ws-zuulservice:non-reactive
+
+
+Mongo
+docker run -d --name monogdb -p 27017:27017 mongo
+
+
+
+
+Albums
+docker run -d --name albumsservice --network host -e "spring.cloud.config.uri=http://172.31.8.75:8888"  adithilokhande/ws-albumsservice:non-reactive
+docker run -d --name albumsservice-reactive --network host -e "spring.cloud.config.uri=http://172.31.8.75:8888"  adithilokhande/albumsservice:reactive
+docker run -d --name albumsservice-reactive --network host -e "spring.cloud.config.uri=http://172.31.8.75:8888" -v /home/ec2-user/photoapp-logs:/root/PhotoApp/logs adithilokhande/albumsservice:reactive
+
+
+LogStash
+Build the image from customized albumsservice-logstash folder in SpringBootMicroService git repository
+docker tag 64fafeb86703 adithilokhande/albumsservice-logstash:reactive
+docker run -d -e ES_JAVA_OPTS="-Xms256m -Xmx512m" --name albumsservice-logstash-reactive adithilokhande/albumsservice-logstash:reactive
+docker run -d --name logstash -v /home/ec2-user/photoapp-logs:/usr/share/photoapp-logs adithilokhande/albumsservice-logstash:reactive
+
+
+
+
+
+
+Users
+docker run -d --name usersservice -e "spring.cloud.config.uri=http://172.31.8.75:8888" --network host adithilokhande/ws-usersservice:non-reactive
+docker run -d --name usersservice-reactive -e "spring.cloud.config.uri=http://172.31.8.75:8888" --network host adithilokhande/usersservice:reactive
+
+
+Run Elasticsearch Docker Container
+docker network create --driver bridge api_network
+docker run -d -e ES_JAVA_OPTS="-Xms256m -Xmx512m" -v esdata1:/usr/share/elasticsearch/data --network api_network --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.10.1
+
+
+Kibana
+Build the image from customized kibana folder in SpringBootMicroService git repository
+docker run -d --network api_network -p 5601:5601 adithilokhande/kibana:latest
+
+=====Mount S3 bucket to local volume in ec2 instance====
+df -h  // For getting all volumes currently mapped
+1) Install below to linux ec2 instance
+   yum -y install automake fuse fuse-devel gcc-c++ git libcurl-devel libxml2-devel make openssl-devel
+git clone https://github.com/s3fs-fuse/s3fs-fus...
+
+cd s3fs-fuse
+./autogen.sh
+./configure
+make
+make install
+
+mkdir -p /home/ec2-user/s3-bucket-app-logs   
+aws s3 mb s3://s3-bucket-adithi-microservice-logs
+
+s3fs s3-bucket-app-logs /home/ec2-user/s3-bucket-app-logs -o iam_role=AccessS3Bucket
+s3fs s3-adithi-microservice-logs /home/ec2-user/albumsservice-logs/ -o iam_role=AccessS3Bucket
+
+sudo umount -l /home/ec2-user/albumsservice-logs
+	   
+   
