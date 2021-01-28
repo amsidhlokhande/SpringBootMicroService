@@ -39,6 +39,25 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-rsa</artifactId>
 		</dependency>
-
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<!-- https://mvnrepository.com/artifact/io.fabric8/fabric8-maven-plugin -->
+				<groupId>io.fabric8</groupId>
+				<artifactId>fabric8-maven-plugin</artifactId>
+				<version>4.4.1</version>
+				<executions>
+					<execution>
+						<id>fmp</id>
+						<goals>
+							<goal>resource</goal>
+							<goal>build</goal>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
